@@ -1,21 +1,21 @@
 import { Link } from "react-router-dom";
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../lib/api";
+import { useT } from "../lib/i18n";
 import ErrorState from "../components/ErrorState";
 import { formatNumber } from "../lib/utils";
 
 export default function GenresPage() {
+  const t = useT();
   const { data, loading, error, reload } = useAsync(() => api.genres(), []);
 
   return (
     <div className="container-page py-8">
       <header className="mb-6">
         <h1 className="font-display text-3xl md:text-4xl font-extrabold">
-          Genres
+          {t("genres.title")}
         </h1>
-        <p className="text-slate-400 mt-1">
-          Pick a genre to discover new favorites.
-        </p>
+        <p className="text-slate-400 mt-1">{t("genres.subtitle")}</p>
       </header>
 
       {loading ? (
@@ -38,7 +38,7 @@ export default function GenresPage() {
                 {g.name}
               </div>
               <div className="mt-1 text-xs text-slate-400">
-                {formatNumber(g.count)} titles
+                {formatNumber(g.count)}
               </div>
             </Link>
           ))}

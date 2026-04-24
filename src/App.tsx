@@ -3,6 +3,7 @@ import Layout from "./components/Layout";
 import HomePage from "./pages/Home";
 import SearchPage from "./pages/Search";
 import AnimeDetail from "./pages/AnimeDetail";
+import WatchPage from "./pages/Watch";
 import GenresPage from "./pages/Genres";
 import TopPage from "./pages/Top";
 import SeasonalPage from "./pages/Seasonal";
@@ -18,6 +19,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="search" element={<SearchPage />} />
         <Route path="anime/:id" element={<AnimeDetail />} />
+        <Route path="anime/:id/watch" element={<WatchPage />} />
         <Route path="genres" element={<GenresPage />} />
         <Route path="top" element={<TopPage />} />
         <Route path="seasonal" element={<SeasonalPage />} />

@@ -127,6 +127,36 @@ export type Episode = {
   recap?: boolean;
 };
 
+export type VideoPromo = {
+  title: string;
+  trailer: {
+    youtube_id?: string | null;
+    url?: string | null;
+    embed_url?: string | null;
+    images?: { large_image_url?: string | null; maximum_image_url?: string | null };
+  };
+};
+
+export type VideoEpisode = {
+  mal_id: number;
+  title: string;
+  episode: string;
+  url: string;
+  images?: { jpg?: { image_url?: string } };
+};
+
+export type VideoMusic = {
+  title: string;
+  video: { image_url?: string; embed_url?: string };
+  meta?: { title?: string; author?: string };
+};
+
+export type AnimeVideos = {
+  promo: VideoPromo[];
+  episodes: VideoEpisode[];
+  music_videos: VideoMusic[];
+};
+
 type ListResp<T> = { data: T[]; pagination?: Pagination };
 type ItemResp<T> = { data: T };
 
@@ -178,4 +208,7 @@ export const api = {
 
   schedules: (day?: string) =>
     get<ListResp<AnimeSummary>>(`/schedules`, { filter: day, sfw: true, limit: 24 }),
+
+  animeVideos: (id: number) =>
+    get<ItemResp<AnimeVideos>>(`/anime/${id}/videos`).then((r) => r.data),
 };

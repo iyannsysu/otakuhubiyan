@@ -1,11 +1,13 @@
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../lib/api";
+import { useT } from "../lib/i18n";
 import HeroCarousel from "../components/HeroCarousel";
 import SectionHeader from "../components/SectionHeader";
 import AnimeGrid, { AnimeGridSkeleton } from "../components/AnimeGrid";
 import ErrorState from "../components/ErrorState";
 
 export default function HomePage() {
+  const t = useT();
   const top = useAsync(() => api.topAnime(1), []);
   const airing = useAsync(() => api.topAnime(1, "airing"), []);
   const season = useAsync(() => api.seasonNow(1), []);
@@ -23,8 +25,8 @@ export default function HomePage() {
 
       <section>
         <SectionHeader
-          title="Top Anime"
-          subtitle="Highest-rated anime of all time"
+          title={t("home.top.title")}
+          subtitle={t("home.top.subtitle")}
           to="/top"
         />
         {top.loading ? (
@@ -38,8 +40,8 @@ export default function HomePage() {
 
       <section>
         <SectionHeader
-          title="Currently Airing"
-          subtitle="What's running on TV right now"
+          title={t("home.airing.title")}
+          subtitle={t("home.airing.subtitle")}
           to="/search?status=airing&order_by=popularity"
         />
         {airing.loading ? (
@@ -53,8 +55,8 @@ export default function HomePage() {
 
       <section>
         <SectionHeader
-          title="This Season"
-          subtitle="The hottest titles of the current season"
+          title={t("home.season.title")}
+          subtitle={t("home.season.subtitle")}
           to="/seasonal"
         />
         {season.loading ? (
@@ -68,8 +70,8 @@ export default function HomePage() {
 
       <section>
         <SectionHeader
-          title="Upcoming"
-          subtitle="Coming to a screen near you"
+          title={t("home.upcoming.title")}
+          subtitle={t("home.upcoming.subtitle")}
           to="/seasonal?tab=upcoming"
         />
         {upcoming.loading ? (

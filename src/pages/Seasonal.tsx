@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../lib/api";
+import { useT } from "../lib/i18n";
 import AnimeGrid, { AnimeGridSkeleton } from "../components/AnimeGrid";
 import ErrorState from "../components/ErrorState";
 import Pagination from "../components/Pagination";
 import { useSearchParams } from "react-router-dom";
 
 export default function SeasonalPage() {
+  const t = useT();
   const [params, setParams] = useSearchParams();
   const tab = (params.get("tab") as "now" | "upcoming") || "now";
   const [page, setPage] = useState(1);
@@ -28,11 +30,9 @@ export default function SeasonalPage() {
     <div className="container-page py-8 space-y-5">
       <header>
         <h1 className="font-display text-3xl md:text-4xl font-extrabold">
-          Seasonal Anime
+          {t("seasonal.title")}
         </h1>
-        <p className="text-slate-400 mt-1">
-          What's on now and what's coming next season.
-        </p>
+        <p className="text-slate-400 mt-1">{t("seasonal.subtitle")}</p>
       </header>
 
       <div className="flex gap-2">
@@ -40,13 +40,13 @@ export default function SeasonalPage() {
           onClick={() => setTab("now")}
           className={tab === "now" ? "chip chip-active" : "chip"}
         >
-          This season
+          {t("home.season.title")}
         </button>
         <button
           onClick={() => setTab("upcoming")}
           className={tab === "upcoming" ? "chip chip-active" : "chip"}
         >
-          Upcoming
+          {t("home.upcoming.title")}
         </button>
       </div>
 

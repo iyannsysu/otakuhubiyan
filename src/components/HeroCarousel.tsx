@@ -4,15 +4,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Play, Star, Tag } from "lucide-react";
 import type { AnimeSummary } from "../lib/api";
 import { imageOf, truncate } from "../lib/utils";
+import { useT } from "../lib/i18n";
 
 export default function HeroCarousel({ items }: { items: AnimeSummary[] }) {
+  const t = useT();
   const slides = items.slice(0, 5);
   const [i, setI] = useState(0);
 
   useEffect(() => {
     if (!slides.length) return;
-    const t = setInterval(() => setI((p) => (p + 1) % slides.length), 6500);
-    return () => clearInterval(t);
+    const timer = setInterval(() => setI((p) => (p + 1) % slides.length), 6500);
+    return () => clearInterval(timer);
   }, [slides.length]);
 
   if (!slides.length) {
@@ -55,7 +57,7 @@ export default function HeroCarousel({ items }: { items: AnimeSummary[] }) {
               className="max-w-2xl"
             >
               <div className="mb-3 flex items-center gap-2">
-                <span className="chip chip-active">Featured</span>
+                <span className="chip chip-active">{t("home.top.title")}</span>
                 {typeof current.score === "number" && current.score > 0 && (
                   <span className="chip">
                     <Star size={12} fill="currentColor" /> {current.score.toFixed(1)}
@@ -81,11 +83,11 @@ export default function HeroCarousel({ items }: { items: AnimeSummary[] }) {
                 ))}
               </div>
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <Link to={`/anime/${current.mal_id}`} className="btn-primary">
-                  <Play size={16} /> View details
+                <Link to={`/anime/${current.mal_id}/watch`} className="btn-primary">
+                  <Play size={16} fill="currentColor" /> {t("detail.watchNow")}
                 </Link>
-                <Link to="/search" className="btn-ghost">
-                  Browse more
+                <Link to={`/anime/${current.mal_id}`} className="btn-ghost">
+                  {t("common.viewAll")}
                 </Link>
               </div>
             </motion.div>

@@ -4,11 +4,13 @@ import { Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../lib/api";
+import { useT } from "../lib/i18n";
 import ErrorState from "../components/ErrorState";
 import Pagination from "../components/Pagination";
 import { formatNumber, imageOf } from "../lib/utils";
 
 export default function CharactersPage() {
+  const t = useT();
   const [page, setPage] = useState(1);
   const { data, loading, error, reload } = useAsync(
     () => api.topCharacters(page),
@@ -19,11 +21,9 @@ export default function CharactersPage() {
     <div className="container-page py-8 space-y-5">
       <header>
         <h1 className="font-display text-3xl md:text-4xl font-extrabold">
-          Top Characters
+          {t("characters.title")}
         </h1>
-        <p className="text-slate-400 mt-1">
-          The most-loved characters in anime.
-        </p>
+        <p className="text-slate-400 mt-1">{t("characters.subtitle")}</p>
       </header>
 
       {loading ? (

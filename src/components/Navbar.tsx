@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Search, Menu, X, Sparkles } from "lucide-react";
+import { Search, Menu, X, Sparkles, Languages } from "lucide-react";
 import { cn } from "../lib/utils";
-
-const links = [
-  { to: "/", label: "Home" },
-  { to: "/search", label: "Browse" },
-  { to: "/genres", label: "Genres" },
-  { to: "/seasonal", label: "Seasonal" },
-  { to: "/schedule", label: "Schedule" },
-  { to: "/characters", label: "Characters" },
-];
+import { useLang } from "../lib/i18n";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const nav = useNavigate();
+  const { lang, setLang, t } = useLang();
+
+  const links = [
+    { to: "/", label: t("nav.home") },
+    { to: "/search", label: t("nav.browse") },
+    { to: "/genres", label: t("nav.genres") },
+    { to: "/seasonal", label: t("nav.seasonal") },
+    { to: "/schedule", label: t("nav.schedule") },
+    { to: "/characters", label: t("nav.characters") },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -31,6 +33,8 @@ export default function Navbar() {
     nav(`/search?q=${encodeURIComponent(q.trim())}`);
     setOpen(false);
   };
+
+  const toggleLang = () => setLang(lang === "id" ? "en" : "id");
 
   return (
     <header
@@ -71,7 +75,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <form onSubmit={submit} className="ml-auto hidden md:flex items-center">
+        <form onSubmit={submit} className="ml-auto hidden md:flex items-center gap-2">
           <div className="relative">
             <Search
               size={16}
@@ -80,19 +84,40 @@ export default function Navbar() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search anime…"
-              className="w-72 rounded-xl bg-white/5 border border-white/10 pl-9 pr-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-brand/60 focus:bg-white/10 transition"
+              placeholder={t("nav.search.placeholder")}
+              className="w-64 rounded-xl bg-white/5 border border-white/10 pl-9 pr-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-brand/60 focus:bg-white/10 transition"
             />
           </div>
+          <button
+            type="button"
+            onClick={toggleLang}
+            aria-label={t("nav.toggle.lang")}
+            title={t("nav.toggle.lang")}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-200 hover:bg-white/10 transition"
+          >
+            <Languages size={14} />
+            {lang.toUpperCase()}
+          </button>
         </form>
 
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="ml-auto md:hidden btn-ghost p-2"
-          aria-label="Toggle menu"
-        >
-          {open ? <X size={18} /> : <Menu size={18} />}
-        </button>
+        <div className="ml-auto flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            onClick={toggleLang}
+            aria-label={t("nav.toggle.lang")}
+            className="inline-flex items-center gap-1 rounded-lg bg-white/5 border border-white/10 px-2.5 py-1.5 text-[11px] font-bold tracking-wider text-slate-200"
+          >
+            <Languages size={12} />
+            {lang.toUpperCase()}
+          </button>
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="btn-ghost p-2"
+            aria-label="Toggle menu"
+          >
+            {open ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -106,7 +131,7 @@ export default function Navbar() {
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search anime…"
+                placeholder={t("nav.search.placeholder")}
                 className="w-full rounded-xl bg-white/5 border border-white/10 pl-9 pr-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-brand/60"
               />
             </form>

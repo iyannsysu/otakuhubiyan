@@ -6,6 +6,7 @@ import {
   Globe,
   Hash,
   Heart,
+  Play,
   PlayCircle,
   Star,
   Tag,
@@ -15,13 +16,16 @@ import {
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../lib/api";
 import { formatNumber, imageOf } from "../lib/utils";
+import { useT } from "../lib/i18n";
 import AnimeGrid from "../components/AnimeGrid";
 import ErrorState from "../components/ErrorState";
 import SectionHeader from "../components/SectionHeader";
+import TranslatedSynopsis from "../components/TranslatedSynopsis";
 
 export default function AnimeDetail() {
   const { id } = useParams();
   const animeId = Number(id);
+  const t = useT();
 
   const anime = useAsync(() => api.animeFull(animeId), [animeId]);
   const characters = useAsync(() => api.animeCharacters(animeId), [animeId]);
@@ -47,7 +51,7 @@ export default function AnimeDetail() {
   if (anime.error || !anime.data) {
     return (
       <div className="container-page py-10">
-        <ErrorState onRetry={anime.reload} message="Couldn't load this anime." />
+        <ErrorState onRetry={anime.reload} message={t("common.error")} />
       </div>
     );
   }
@@ -112,7 +116,7 @@ export default function AnimeDetail() {
               ) : null}
               {a.members ? (
                 <span className="chip">
-                  <Users size={12} /> {formatNumber(a.members)} members
+                  <Users size={12} /> {formatNumber(a.members)} {t("detail.stat.members")}
                 </span>
               ) : null}
             </div>
@@ -124,33 +128,43 @@ export default function AnimeDetail() {
               <p className="text-slate-400 mt-1">{a.title_japanese}</p>
             )}
 
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <Link
+                to={`/anime/${animeId}/watch`}
+                className="btn-primary shadow-glow"
+              >
+                <Play size={16} fill="currentColor" />
+                {t("detail.watchNow")}
+              </Link>
+            </div>
+
             <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-              <Stat icon={<Tv size={14} />} label="Type" value={a.type ?? "—"} />
+              <Stat icon={<Tv size={14} />} label={t("detail.stat.type")} value={a.type ?? "—"} />
               <Stat
                 icon={<PlayCircle size={14} />}
-                label="Episodes"
+                label={t("detail.stat.episodes")}
                 value={a.episodes ? String(a.episodes) : "—"}
               />
               <Stat
                 icon={<Calendar size={14} />}
-                label="Aired"
+                label={t("detail.stat.aired")}
                 value={a.aired?.string ?? a.year?.toString() ?? "—"}
               />
               <Stat
                 icon={<Clock size={14} />}
-                label="Duration"
+                label={t("detail.stat.duration")}
                 value={a.duration ?? "—"}
               />
-              <Stat icon={<Film size={14} />} label="Status" value={a.status ?? "—"} />
-              <Stat icon={<Tag size={14} />} label="Source" value={a.source ?? "—"} />
+              <Stat icon={<Film size={14} />} label={t("detail.stat.status")} value={a.status ?? "—"} />
+              <Stat icon={<Tag size={14} />} label={t("detail.stat.source")} value={a.source ?? "—"} />
               <Stat
                 icon={<Star size={14} />}
-                label="Rating"
+                label={t("detail.stat.rating")}
                 value={a.rating ?? "—"}
               />
               <Stat
                 icon={<Users size={14} />}
-                label="Studio"
+                label={t("detail.stat.studio")}
                 value={a.studios?.[0]?.name ?? "—"}
               />
             </div>
@@ -174,18 +188,20 @@ export default function AnimeDetail() {
 
             {a.synopsis && (
               <div className="mt-6 card p-5">
-                <h3 className="text-lg font-bold mb-2">Synopsis</h3>
-                <p className="text-slate-300 whitespace-pre-line leading-relaxed">
-                  {a.synopsis}
-                </p>
+                <h3 className="text-lg font-bold mb-2">{t("detail.synopsis")}</h3>
+                <TranslatedSynopsis
+                  text={a.synopsis}
+                  className="text-slate-300 whitespace-pre-line leading-relaxed"
+                />
                 {a.background && (
                   <>
                     <h4 className="mt-5 mb-2 text-sm uppercase tracking-wider text-slate-400">
-                      Background
+                      {t("detail.background")}
                     </h4>
-                    <p className="text-slate-400 whitespace-pre-line leading-relaxed text-sm">
-                      {a.background}
-                    </p>
+                    <TranslatedSynopsis
+                      text={a.background}
+                      className="text-slate-400 whitespace-pre-line leading-relaxed text-sm"
+                    />
                   </>
                 )}
               </div>
@@ -209,8 +225,8 @@ export default function AnimeDetail() {
 
         <section className="mt-12">
           <SectionHeader
-            title="Characters"
-            subtitle="Main and supporting cast"
+            title={t("detail.characters")}
+            subtitle={t("detail.characters.sub")}
           />
           {characters.loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -251,7 +267,7 @@ export default function AnimeDetail() {
 
         {!eps.loading && (eps.data?.data ?? []).length > 0 && (
           <section className="mt-12">
-            <SectionHeader title="Episodes" subtitle="First episodes list" />
+            <SectionHeader title={t("detail.episodes")} subtitle={t("detail.episodes.sub")} />
             <div className="card divide-y divide-white/5">
               {(eps.data?.data ?? []).slice(0, 25).map((e) => (
                 <div
@@ -284,8 +300,8 @@ export default function AnimeDetail() {
 
         <section className="mt-12 mb-10">
           <SectionHeader
-            title="Recommendations"
-            subtitle="If you liked this, you might enjoy…"
+            title={t("detail.recs")}
+            subtitle={t("detail.recs.sub")}
           />
           {recs.loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
