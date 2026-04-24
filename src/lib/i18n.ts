@@ -86,6 +86,25 @@ const en: Dict = {
   "watch.disclaimer":
     "OtakuHub does not host or stream anime content. Links above point to third-party services.",
 
+  "stream.title": "Watch Online (Indonesian Sub)",
+  "stream.subtitle":
+    "Auto-matched from Indonesian fansub sources via the Sonzai X API.",
+  "stream.searching": "Searching for \u201C{q}\u201D across Indonesian sources\u2026",
+  "stream.notFound.title": "Not available on Indonesian sources",
+  "stream.notFound.desc":
+    "We couldn't find this title on Samehadaku or Animekita. Try an official provider below.",
+  "stream.error": "Failed to load stream",
+  "stream.matched": "Matched source",
+  "stream.loadingPlayer": "Loading episode\u2026",
+  "stream.episodes": "Episodes",
+  "stream.noSources": "No playable sources returned for this episode.",
+  "stream.html5Fallback": "Your browser does not support HTML5 video.",
+  "stream.serverPicker": "Server",
+  "stream.iframeNote":
+    "This server uses an external embed (Blogger / Mega / Wibufile). Clicking play opens the third-party player in place.",
+  "stream.disclaimer":
+    "Streaming sources are fetched from third-party Indonesian fansub APIs (Samehadaku, Animekita via Sonzai X). OtakuHub does not host the video files.",
+
   "schedule.title": "Weekly Schedule",
   "schedule.subtitle": "Currently airing anime by broadcast day",
 
@@ -195,6 +214,25 @@ const id: Dict = {
   "watch.external.title": "Tautan Eksternal",
   "watch.disclaimer":
     "OtakuHub tidak meng-host atau menayangkan konten anime. Tautan di atas mengarah ke layanan pihak ketiga.",
+
+  "stream.title": "Nonton Online (Sub Indo)",
+  "stream.subtitle":
+    "Otomatis dicocokkan dari sumber fansub Indonesia lewat API Sonzai X.",
+  "stream.searching": "Mencari \u201C{q}\u201D di sumber Indonesia\u2026",
+  "stream.notFound.title": "Tidak tersedia di sumber Indonesia",
+  "stream.notFound.desc":
+    "Judul ini tidak ditemukan di Samehadaku atau Animekita. Coba penyedia resmi di bawah.",
+  "stream.error": "Gagal memuat streaming",
+  "stream.matched": "Sumber cocok",
+  "stream.loadingPlayer": "Memuat episode\u2026",
+  "stream.episodes": "Episode",
+  "stream.noSources": "Tidak ada sumber yang bisa diputar untuk episode ini.",
+  "stream.html5Fallback": "Browser kamu tidak mendukung video HTML5.",
+  "stream.serverPicker": "Server",
+  "stream.iframeNote":
+    "Server ini pakai embed pihak ketiga (Blogger / Mega / Wibufile). Klik play akan membuka player mereka di dalam kotak.",
+  "stream.disclaimer":
+    "Sumber streaming diambil dari API fansub Indonesia pihak ketiga (Samehadaku, Animekita via Sonzai X). OtakuHub tidak meng-host file videonya.",
 
   "schedule.title": "Jadwal Mingguan",
   "schedule.subtitle": "Anime yang sedang tayang berdasarkan hari siaran",

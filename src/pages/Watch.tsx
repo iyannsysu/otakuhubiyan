@@ -6,6 +6,7 @@ import { imageOf } from "../lib/utils";
 import { useT } from "../lib/i18n";
 import ErrorState from "../components/ErrorState";
 import SectionHeader from "../components/SectionHeader";
+import SonzaiStreaming from "../components/SonzaiStreaming";
 
 /** Known streaming providers with brand colors so the buttons look like real CTA cards. */
 const PROVIDER_STYLES: Record<string, { bg: string; fg: string }> = {
@@ -99,6 +100,11 @@ export default function WatchPage() {
           </div>
         </div>
       </div>
+
+      <SonzaiStreaming
+        titles={[a.title_english, a.title, a.title_japanese]}
+        displayTitle={a.title_english || a.title}
+      />
 
       <section>
         <SectionHeader
