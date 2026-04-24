@@ -298,12 +298,16 @@ function EpisodesSection({
           >
             <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-md bg-[var(--muted)]">
               {(ep.thumbnail || cover) && (
-                <Image
+                // Streaming-episode thumbnails are served from arbitrary
+                // streaming-service CDNs (Crunchyroll, Bstation, etc.), so
+                // skip next/image's domain allow-list and use a plain img.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={ep.thumbnail || cover || ""}
                   alt={ep.title || `Episode ${idx + 1}`}
-                  fill
-                  sizes="112px"
-                  className="object-cover"
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  referrerPolicy="no-referrer"
                 />
               )}
               <div className="absolute inset-0 grid place-items-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
