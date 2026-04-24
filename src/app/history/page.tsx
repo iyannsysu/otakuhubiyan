@@ -60,7 +60,7 @@ export default async function HistoryPage() {
           return (
             <li key={h.id}>
               <Link
-                href={`/watch/${h.anilistId}/${h.episode}`}
+                href={`/anime/${h.anilistId}`}
                 prefetch={false}
                 className="group flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--card)] p-2 transition-colors hover:bg-[var(--accent)]"
               >

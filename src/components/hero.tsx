@@ -81,7 +81,7 @@ export function Hero({ items }: { items: AniListMedia[] }) {
           </p>
           <div className="flex flex-wrap gap-2">
             <Button asChild size="lg" className="font-semibold">
-              <Link href={`/watch/${current.id}/1`}>
+              <Link href={`/anime/${current.id}`}>
                 <Play className="fill-current" />
                 Tonton Sekarang
               </Link>

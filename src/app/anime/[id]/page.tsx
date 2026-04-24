@@ -1,16 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import { Star, Calendar, Clock, Tv, Play } from "lucide-react";
+import { Star, Calendar, Clock, Tv, Play, ExternalLink } from "lucide-react";
 import { fetchMediaById } from "@/lib/anilist";
-import { fetchEpisodesByAnilistId } from "@/lib/consumet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { AnimeRow } from "@/components/anime-row";
 import { stripHtml, formatSeason } from "@/lib/utils";
 import { WatchlistButton } from "@/components/watchlist-button";
+import {
+  FALLBACK_PLATFORMS,
+  filterStreamingLinks,
+} from "@/lib/watch-links";
 
 export const revalidate = 3600;
 
@@ -137,18 +138,11 @@ export default async function AnimeDetailPage({
                 </Link>
               ))}
             </div>
-            <div className="flex flex-wrap justify-center gap-2 pt-2 sm:justify-start">
-              <Button asChild size="lg">
-                <Link href={`/watch/${media.id}/1`}>
-                  <Play className="fill-current" /> Tonton Episode 1
-                </Link>
-              </Button>
-              <WatchlistButton
-                anilistId={media.id}
-                title={title}
-                image={cover || undefined}
-              />
-            </div>
+            <WatchOnButtons
+              media={media}
+              title={title}
+              cover={cover}
+            />
           </div>
         </div>
 
@@ -161,12 +155,7 @@ export default async function AnimeDetailPage({
           </div>
         )}
 
-        <div className="mt-8">
-          <h2 className="mb-4 text-xl font-bold tracking-tight">Episode</h2>
-          <Suspense fallback={<EpisodesSkeleton />}>
-            <EpisodesList anilistId={anilistId} cover={cover} />
-          </Suspense>
-        </div>
+        <EpisodesSection media={media} cover={cover} />
 
         {media.characters?.edges?.length ? (
           <div className="mt-10">
@@ -217,67 +206,123 @@ export default async function AnimeDetailPage({
   );
 }
 
-async function EpisodesList({
-  anilistId,
+function WatchOnButtons({
+  media,
+  title,
   cover,
 }: {
-  anilistId: number;
+  media: NonNullable<Awaited<ReturnType<typeof fetchMediaById>>>;
+  title: string;
   cover: string | null;
 }) {
-  const info = await fetchEpisodesByAnilistId(anilistId);
-  const episodes = info?.episodes || [];
-  if (!episodes.length) {
-    return (
-      <div className="rounded-lg border border-dashed border-[var(--border)] p-6 text-sm text-[var(--muted-foreground)]">
-        Belum ada episode dari provider streaming. Anime ini mungkin baru akan
-        tayang atau belum ada di sumber yang kami agregasi. Data metadata tetap
-        tersedia dari AniList.
-      </div>
-    );
-  }
+  const streamingLinks = filterStreamingLinks(media.externalLinks);
+  const hasLegitLinks = streamingLinks.length > 0;
+  const buttons = hasLegitLinks
+    ? streamingLinks.slice(0, 4).map((l) => ({
+        key: l.site,
+        name: l.site,
+        url: l.url,
+        color: l.color || undefined,
+      }))
+    : FALLBACK_PLATFORMS.slice(0, 4).map((p) => ({
+        key: p.key,
+        name: p.name,
+        url: p.search(title),
+        color: p.color,
+      }));
+
   return (
-    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-      {episodes.map((ep) => (
-        <Link
-          key={ep.id}
-          href={`/watch/${anilistId}/${ep.number}`}
-          prefetch={false}
-          className="group flex items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--card)] p-2 transition-colors hover:bg-[var(--accent)]"
-        >
-          <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-md bg-[var(--muted)]">
-            {(ep.image || cover) && (
-              <Image
-                src={ep.image || cover || ""}
-                alt={`Episode ${ep.number}`}
-                fill
-                sizes="112px"
-                className="object-cover"
-              />
-            )}
-            <div className="absolute inset-0 grid place-items-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-              <Play className="size-6 fill-white text-white" />
-            </div>
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-semibold text-[var(--primary)]">
-              Episode {ep.number}
-            </p>
-            <p className="line-clamp-2 text-sm font-medium leading-snug">
-              {ep.title || `Episode ${ep.number}`}
-            </p>
-          </div>
-        </Link>
-      ))}
+    <div className="space-y-2 pt-2">
+      <div className="flex flex-wrap justify-center gap-2 sm:justify-start">
+        {buttons.map((b, i) => (
+          <Button
+            key={b.key}
+            asChild
+            size="lg"
+            variant={i === 0 ? "default" : "outline"}
+            style={
+              i === 0 && b.color
+                ? { backgroundColor: b.color, borderColor: b.color, color: "white" }
+                : undefined
+            }
+          >
+            <a href={b.url} target="_blank" rel="noopener noreferrer">
+              {i === 0 ? (
+                <Play className="fill-current" />
+              ) : (
+                <ExternalLink />
+              )}
+              <span>Nonton di {b.name}</span>
+            </a>
+          </Button>
+        ))}
+        <WatchlistButton
+          anilistId={media.id}
+          title={title}
+          image={cover || undefined}
+        />
+      </div>
+      {!hasLegitLinks && (
+        <p className="text-[11px] text-[var(--muted-foreground)] sm:text-left">
+          OtakuHub adalah katalog discovery — pencarian akan dibuka di layanan
+          streaming resmi.
+        </p>
+      )}
     </div>
   );
 }
 
-function EpisodesSkeleton() {
+function EpisodesSection({
+  media,
+  cover,
+}: {
+  media: NonNullable<Awaited<ReturnType<typeof fetchMediaById>>>;
+  cover: string | null;
+}) {
+  const episodes = (media.streamingEpisodes || []).filter((e) => e.url);
+  if (!episodes.length) return null;
   return (
-    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <Skeleton key={i} className="h-[76px] w-full rounded-lg" />
-      ))}
+    <div className="mt-8">
+      <h2 className="mb-1 text-xl font-bold tracking-tight">Episode</h2>
+      <p className="mb-4 text-xs text-[var(--muted-foreground)]">
+        Link langsung ke episode di layanan streaming resmi (via AniList).
+      </p>
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {episodes.map((ep, idx) => (
+          <a
+            key={ep.url || idx}
+            href={ep.url || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--card)] p-2 transition-colors hover:bg-[var(--accent)]"
+          >
+            <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-md bg-[var(--muted)]">
+              {(ep.thumbnail || cover) && (
+                <Image
+                  src={ep.thumbnail || cover || ""}
+                  alt={ep.title || `Episode ${idx + 1}`}
+                  fill
+                  sizes="112px"
+                  className="object-cover"
+                />
+              )}
+              <div className="absolute inset-0 grid place-items-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                <Play className="size-6 fill-white text-white" />
+              </div>
+            </div>
+            <div className="min-w-0 flex-1">
+              {ep.site && (
+                <p className="text-xs font-semibold text-[var(--primary)]">
+                  {ep.site}
+                </p>
+              )}
+              <p className="line-clamp-2 text-sm font-medium leading-snug">
+                {ep.title || `Episode ${idx + 1}`}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }

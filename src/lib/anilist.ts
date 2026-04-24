@@ -55,6 +55,21 @@ export type AniListMedia = {
   recommendations?: {
     nodes: { mediaRecommendation: AniListMedia | null }[];
   };
+  streamingEpisodes?: {
+    title: string | null;
+    thumbnail: string | null;
+    url: string | null;
+    site: string | null;
+  }[];
+  externalLinks?: {
+    id: number;
+    url: string | null;
+    site: string;
+    type: string | null;
+    language: string | null;
+    color: string | null;
+    icon: string | null;
+  }[];
 };
 
 const mediaFragment = gql`
@@ -237,6 +252,21 @@ export async function fetchMediaById(id: number): Promise<AniListMedia | null> {
               }
             }
           }
+        }
+        streamingEpisodes {
+          title
+          thumbnail
+          url
+          site
+        }
+        externalLinks {
+          id
+          url
+          site
+          type
+          language
+          color
+          icon
         }
         recommendations(sort: RATING_DESC, perPage: 12) {
           nodes {
