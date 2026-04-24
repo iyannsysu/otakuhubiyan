@@ -1,0 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-bg text-slate-100 font-body antialiased;
+  background-image:
+    radial-gradient(60% 80% at 20% 0%, rgba(124, 92, 255, 0.18), transparent 60%),
+    radial-gradient(50% 70% at 100% 10%, rgba(255, 61, 138, 0.18), transparent 65%),
+    linear-gradient(180deg, #07070f 0%, #0a0a14 100%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: #ff3d8a;
+  color: white;
+}
+
+/* Custom scrollbar */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #2a2a44;
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #3a3a5a;
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .card {
+    @apply rounded-2xl bg-bg-card border border-white/5 shadow-soft;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand/60;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-white hover:bg-brand-600 shadow-glow;
+  }
+  .btn-ghost {
+    @apply btn bg-white/5 hover:bg-white/10 text-slate-100;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 text-xs font-medium text-slate-200 transition-colors;
+  }
+  .chip-active {
+    @apply bg-brand text-white border-brand hover:bg-brand-600;
+  }
+  .skeleton {
+    @apply relative overflow-hidden bg-white/5 rounded-xl;
+  }
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0 animate-shimmer;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.06),
+      transparent
+    );
+    background-size: 800px 100%;
+  }
+}
+
+/* Hide arrows on number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
